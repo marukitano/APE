@@ -1,0 +1,10 @@
+﻿################################################################################
+# Diese .gitignore-Datei wurde von Microsoft(R) Visual Studio automatisch erstellt.
+################################################################################
+
+/src/Examples/Maui2024/.vs/Maui2024/CopilotIndices/17.12.38.29086/CodeChunks.db-shm
+/src/Examples/Maui2024/.vs/Maui2024/CopilotIndices/17.12.38.29086/CodeChunks.db
+/src/Examples/Maui2024/.vs/Maui2024/CopilotIndices/17.12.38.29086/CodeChunks.db-wal
+/src/Examples/Maui2024/.vs/Maui2024/CopilotIndices/17.12.38.29086/SemanticSymbols.db
+/src/Examples/Maui2024/.vs/Maui2024/CopilotIndices/17.12.38.29086/SemanticSymbols.db-shm
+/src/Examples/Maui2024/.vs/Maui2024/CopilotIndices/17.12.38.29086/SemanticSymbols.db-wal

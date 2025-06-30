@@ -1,6 +1,6 @@
 ﻿using UIKit;
 
-namespace LZ2;
+namespace LZK2;
 
 public class Program
 {

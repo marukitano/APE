@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Shell
-    x:Class="LZ2.AppShell"
+    x:Class="LZK2.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:lz2="clr-namespace:LZ2"
+    xmlns:local="clr-namespace:LZK2"
     Shell.FlyoutBehavior="Disabled"
     Title="LZK2">
 
     <ShellContent
         Title="Home"
-        ContentTemplate="{DataTemplate lz2:MainPage}"
+        ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
 
 </Shell>

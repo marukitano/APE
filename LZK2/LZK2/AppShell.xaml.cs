@@ -1,4 +1,4 @@
-﻿namespace LZ2;
+﻿namespace LZK2;
 
 public partial class AppShell : Shell
 {

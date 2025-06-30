@@ -1,6 +1,6 @@
 ﻿using Core;
 
-namespace LZ2;
+namespace LZK2;
 
 public partial class MainPage : ContentPage
 {

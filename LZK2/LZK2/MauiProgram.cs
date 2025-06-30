@@ -1,8 +1,9 @@
 ﻿using CommunityToolkit.Maui;
 using Core.Services;
 using Microsoft.Extensions.Logging;
+using LZK2;
 
-namespace LZ2;
+namespace LZK2;
 
 public static class MauiProgram
 {
@@ -20,8 +21,10 @@ public static class MauiProgram
 
 
         builder.Services
-            .AddDefaultServices()
-            .AddSingleton<MainPage>();
+    .AddDefaultServices()
+    .AddSingleton<IPersonService, PersonService>()
+    .AddSingleton<MainPage>();
+
 #if DEBUG
         builder.Logging.AddDebug();
 #endif

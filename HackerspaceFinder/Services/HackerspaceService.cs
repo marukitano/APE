@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Json;
+using System.Text.Json;
 using HackerspaceFinder.Model;
 
 namespace HackerspaceFinder.Services;
@@ -14,26 +15,50 @@ public class HackerspaceService : IHackerspaceService
 
     public async Task<List<Hackerspace>> LoadHackerspacesAsync()
     {
-        const string apiUrl = "https://spaceapi.io/stuff/mapall-space/";
+        const string apiUrl = "https://mapall.space/api.json";
 
         try
         {
-            var rawList = await _httpClient.GetFromJsonAsync<List<RawHackerspace>>(apiUrl);
-            if (rawList == null) return new();
+            using var stream = await _httpClient.GetStreamAsync(apiUrl);
+            using var doc = await JsonDocument.ParseAsync(stream);
 
-            return rawList
-                .Where(x => x.location?.lat != null && x.location?.lon != null)
-                .Select(x => new Hackerspace
+            var features = doc.RootElement.GetProperty("features");
+            var spaces = new List<Hackerspace>();
+
+            foreach (var feature in features.EnumerateArray())
+            {
+                if (!feature.TryGetProperty("geometry", out var geometry) ||
+                    !geometry.TryGetProperty("coordinates", out var coords) ||
+                    coords.GetArrayLength() < 2)
+                    continue;
+
+                var latitude = coords[1].GetDouble();
+                var longitude = coords[0].GetDouble();
+
+                var props = feature.GetProperty("properties");
+
+                var space = new Hackerspace
                 {
-                    Name = x.name,
-                    Address = x.location?.address ?? "Unbekannt",
-                    Latitude = x.location!.lat!.Value,
-                    Longitude = x.location.lon!.Value,
-                    WebsiteUrl = x.contact?.web ?? "",
-                    IsOpen = x.state?.open ?? false,
-                    Phone = x.contact?.phone ?? "",
-                    Email = x.contact?.email ?? ""
-                }).ToList();
+                    Name = props.GetProperty("name").GetString() ?? "Unbekannt",
+                    Address = string.Join(" ",
+                        new[]
+                        {
+                            props.GetProperty("address").GetString(),
+                            props.GetProperty("zip").GetString(),
+                            props.GetProperty("city").GetString()
+                        }.Where(s => !string.IsNullOrWhiteSpace(s))),
+                    Latitude = latitude,
+                    Longitude = longitude,
+                    WebsiteUrl = props.GetProperty("url").GetString() ?? string.Empty,
+                    Email = props.GetProperty("email").GetString() ?? string.Empty,
+                    Phone = props.GetProperty("phone").ToString(),
+                    IsOpen = false
+                };
+
+                spaces.Add(space);
+            }
+
+            return spaces;
         }
         catch (Exception ex)
         {
@@ -42,31 +67,4 @@ public class HackerspaceService : IHackerspaceService
         }
     }
 
-    // Diese Klasse entspricht der Struktur der JSON-API
-    private class RawHackerspace
-    {
-        public string name { get; set; }
-        public Location? location { get; set; }
-        public Contact? contact { get; set; }
-        public State? state { get; set; }
-
-        public class Location
-        {
-            public double? lat { get; set; }
-            public double? lon { get; set; }
-            public string? address { get; set; }
-        }
-
-        public class Contact
-        {
-            public string? web { get; set; }
-            public string? phone { get; set; }
-            public string? email { get; set; }
-        }
-
-        public class State
-        {
-            public bool? open { get; set; }
-        }
-    }
 }

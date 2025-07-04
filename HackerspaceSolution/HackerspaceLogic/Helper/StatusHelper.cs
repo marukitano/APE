@@ -5,7 +5,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SpaceApiTest.Helper
+namespace HackerspaceLogic.Helper
 {
     public static class StatusHelper
     {

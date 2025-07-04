@@ -4,7 +4,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace SpaceApiTest.Helper
+namespace HackerspaceLogic.Helper
 {
     public class DynamicSpaceList
     {

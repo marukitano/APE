@@ -8,8 +8,10 @@ while (running)
     Console.WriteLine("SpaceAPI Tools");
     Console.WriteLine("---------------------");
     Console.WriteLine("[1] Property-Felder scannen");
-    Console.WriteLine("[2] Liste aller Spaces anzeigen");
-    Console.WriteLine("[3] Source-JSON-Felder analysieren");
+    Console.WriteLine("[2] Akteulle Liste aller Spaces Laden");
+    Console.WriteLine("[3] Source-JSON-Felder statistik");
+    Console.WriteLine("[4] Mapdaten extrahieren");
+    Console.WriteLine("[5] LabInspector");
 
     Console.WriteLine("[0] Beenden");
     Console.Write("Eingabe: ");
@@ -28,6 +30,14 @@ while (running)
 
         case "3":
             await RemoteSourceScanner.RunAsync();
+            break;
+
+        case "4":
+            await MapPropertyHelper.RunAsync();
+            break;
+
+        case "5":
+            await LabInspector.RunAsync();
             break;
 
         case "0":

@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Text.Json;
-using System.Threading.Tasks;
+﻿using System.Text.Json;
 
 namespace HackerspaceLogic.Helper
 {
     public class SpaceInfo
     {
-        public string Name { get; set; }
-        public string SourceUrl { get; set; }
+        public string? Name { get; set; }
+        public string? SourceUrl { get; set; }
     }
 
     public class DynamicSpaceList

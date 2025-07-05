@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text.Json;
-using System.Threading.Tasks;
+﻿using System.Text.Json;
 
 namespace HackerspaceLogic.Helper
 {
@@ -111,7 +106,7 @@ namespace HackerspaceLogic.Helper
             Console.WriteLine($"{label,-30} [{element.ValueKind}]");
         }
 
-        private static void DumpTreeElement(JsonElement element, string indent = "", bool isLast = true, int depth = 0)
+        private static void DumpTreeElement(JsonElement element, string indent = "", int depth = 0)
         {
             if (element.ValueKind == JsonValueKind.Object)
             {
@@ -138,7 +133,7 @@ namespace HackerspaceLogic.Helper
                     if (prop.Value.ValueKind == JsonValueKind.Object || prop.Value.ValueKind == JsonValueKind.Array)
                     {
                         var newIndent = indent + (last ? "    " : "│   ");
-                        DumpTreeElement(prop.Value, newIndent, last, depth + 1);
+                        DumpTreeElement(prop.Value, newIndent, depth + 1);
                     }
 
                     // Leerzeile bei Top-Level-Props für bessere Lesbarkeit
@@ -163,7 +158,7 @@ namespace HackerspaceLogic.Helper
                     if (item.ValueKind == JsonValueKind.Object || item.ValueKind == JsonValueKind.Array)
                     {
                         var newIndent = indent + (last ? "    " : "│   ");
-                        DumpTreeElement(item, newIndent, last, depth + 1);
+                        DumpTreeElement(item, newIndent, depth + 1);
                     }
                 }
             }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text.Json;
-using System.Threading.Tasks;
+﻿using System.Text.Json;
 
 namespace HackerspaceLogic.Helper;
 
@@ -14,7 +9,8 @@ public static class InteractiveSpaceExplorer
         try
         {
             var featuresUrl = "https://mapall.space/api.json";
-            using var httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(10) };
+            using var httpClient = new HttpClient();
+            httpClient.Timeout = TimeSpan.FromSeconds(10);
 
             var featureJson = await httpClient.GetStringAsync(featuresUrl);
             using var featureDoc = JsonDocument.Parse(featureJson);
@@ -118,7 +114,7 @@ public static class InteractiveSpaceExplorer
     }
 
 
-    private static void DumpTreeElement(JsonElement element, string indent = "", bool isLast = true, int depth = 0)
+    private static void DumpTreeElement(JsonElement element, string indent = "", int depth = 0)
     {
         if (element.ValueKind == JsonValueKind.Object)
         {
@@ -145,7 +141,7 @@ public static class InteractiveSpaceExplorer
                 if (prop.Value.ValueKind == JsonValueKind.Object || prop.Value.ValueKind == JsonValueKind.Array)
                 {
                     var newIndent = indent + (last ? "    " : "│   ");
-                    DumpTreeElement(prop.Value, newIndent, last, depth + 1);
+                    DumpTreeElement(prop.Value, newIndent, depth + 1);
                 }
 
                 if (depth == 0 && i < props.Count - 1)
@@ -169,7 +165,7 @@ public static class InteractiveSpaceExplorer
                 if (item.ValueKind == JsonValueKind.Object || item.ValueKind == JsonValueKind.Array)
                 {
                     var newIndent = indent + (last ? "    " : "│   ");
-                    DumpTreeElement(item, newIndent, last, depth + 1);
+                    DumpTreeElement(item, newIndent, depth + 1);
                 }
             }
         }

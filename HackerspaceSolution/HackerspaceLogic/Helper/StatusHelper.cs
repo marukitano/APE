@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Text.Json;
 
 namespace HackerspaceLogic.Helper
 {
@@ -12,7 +7,8 @@ namespace HackerspaceLogic.Helper
         public static async Task RunAsync()
         {
             string apiUrl = "https://mapall.space/api.json";
-            using var client = new HttpClient { Timeout = TimeSpan.FromSeconds(2) };
+            using var client = new HttpClient();
+            client.Timeout = TimeSpan.FromSeconds(2);
 
             try
             {

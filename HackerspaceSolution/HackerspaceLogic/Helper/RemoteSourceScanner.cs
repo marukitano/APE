@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Text.Json;
 
 namespace HackerspaceLogic.Helper
 {
@@ -16,7 +11,7 @@ namespace HackerspaceLogic.Helper
 
             var globalStats = new Dictionary<string, Dictionary<JsonValueKind, int>>();
             var failedSpaces = new List<(string Name, string Email, string Url, string Error)>();
-            int total = 0, success = 0;
+            int total, success = 0;
 
             try
             {

@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HackerspaceCLI", "Hackerspa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HackerspaceApp", "HackerspaceApp\HackerspaceApp.csproj", "{DAD7C9EE-8DA5-2EE8-77DB-3CC070663E34}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HackerspaceTests", "HackerspaceTests\HackerspaceTests.csproj", "{76B1A92C-6B1C-401A-A994-62E1C09501EF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{DAD7C9EE-8DA5-2EE8-77DB-3CC070663E34}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DAD7C9EE-8DA5-2EE8-77DB-3CC070663E34}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DAD7C9EE-8DA5-2EE8-77DB-3CC070663E34}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76B1A92C-6B1C-401A-A994-62E1C09501EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76B1A92C-6B1C-401A-A994-62E1C09501EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76B1A92C-6B1C-401A-A994-62E1C09501EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76B1A92C-6B1C-401A-A994-62E1C09501EF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,6 +1,4 @@
-﻿using Microsoft.Maui.Controls;
-
-namespace HackerspaceApp;
+﻿namespace HackerspaceApp;
 
 public partial class AppShell : Shell
 {

@@ -1,7 +1,7 @@
 ﻿using Android.App;
 using Android.Runtime;
 
-namespace HackerspaceApp
+namespace ChaosMap
 {
     [Application]
     public class MainApplication : MauiApplication

@@ -1,4 +1,4 @@
-﻿namespace HackerspaceApp
+﻿namespace ChaosMap
 {
     public partial class MainPage : ContentPage
     {

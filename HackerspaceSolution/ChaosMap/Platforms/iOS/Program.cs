@@ -1,7 +1,7 @@
 ﻿using ObjCRuntime;
 using UIKit;
 
-namespace HackerspaceApp
+namespace ChaosMap
 {
     public class Program
     {

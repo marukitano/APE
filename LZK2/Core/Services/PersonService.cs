@@ -18,6 +18,8 @@ public class PersonService : IPersonService
 
     public async Task<List<Person>> Load()
     {
+        await _localStorage.Initialize();
+
         return await _localStorage.LoadAll();
     }
 }

@@ -105,8 +105,6 @@ public partial class MainPageViewModel : ViewModelBase
         {
             try
             {
-                await _localStorage.Initialize();
-
                 var people = await _personService.Load();
 
                 if (people.Count == 0)

@@ -40,13 +40,17 @@
                    Placeholder="Please enter your last name" />
 
             <Entry Text="{Binding Plz, Mode=TwoWay}"
-                   Placeholder="Please enter your ZIP code" />
+                   Placeholder="Please enter your ZIP code"/>
 
-            <ListView ItemsSource="{Binding Items}" SelectedItem="{Binding SelectedItem}" HeightRequest="400">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ViewCell>
-                            <Frame BorderColor="DarkGray" CornerRadius="4" Margin="5">
+            <Frame BorderColor="DarkGray"
+                   CornerRadius="4"
+                   Margin="5">
+                <ListView ItemsSource="{Binding Items}"
+                          SelectedItem="{Binding SelectedItem}"
+                          HeightRequest="400">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
                                 <Grid Padding="10">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="2*" />
@@ -74,11 +78,11 @@
                                            HorizontalTextAlignment="Center"
                                            VerticalOptions="End" />
                                 </Grid>
-                            </Frame>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Frame>
 
             <Grid ColumnSpacing="20">
                 <Grid.ColumnDefinitions>

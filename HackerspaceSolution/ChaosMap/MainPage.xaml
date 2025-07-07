@@ -57,7 +57,9 @@
             <!-- Liste -->
             <CollectionView x:Name="PreviewList"
                             HeightRequest="300"
-                            ItemsSource="{Binding Hackerspaces}">
+                            ItemsSource="{Binding Hackerspaces}"
+                            SelectionMode="Single"
+                            SelectionChanged="PreviewList_SelectionChanged">
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models1:ValidatedHackerspace">
                         <Border Stroke="LightGray"

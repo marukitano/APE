@@ -1,7 +1,8 @@
 ﻿namespace ChaosMap;
 
-using HackerspaceLogic.Core;
 using ChaosMap.ViewModels; // Wichtig für das ViewModel
+using ChaosMap.Views;
+using HackerspaceLogic.Core;
 
 public partial class MainPage : ContentPage
 {
@@ -61,5 +62,17 @@ public partial class MainPage : ContentPage
             vm.SortByOpenStatus();
     }
 
+    private async void PreviewList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (e.CurrentSelection.FirstOrDefault() is HackerspaceLogic.Core.Models.ValidatedHackerspace selected)
+        {
+            await Shell.Current.GoToAsync(nameof(DetailPage), true, new Dictionary<string, object>
+            {
+                { "SelectedHackerspace", selected }
+            });
+
+            PreviewList.SelectedItem = null; // Auswahl zurücksetzen
+        }
+    }
 
 }

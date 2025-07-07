@@ -9,7 +9,7 @@ namespace ChaosMap
             InitializeComponent();
 
             // 🔗 Route registrieren, damit wir später navigieren können
-            Routing.RegisterRoute("DetailPage", typeof(DetailPage));
+            Routing.RegisterRoute(nameof(DetailPage), typeof(DetailPage));
         }
     }
 }

@@ -1,15 +1,16 @@
 ﻿using System;
 using System.IO;
 
-namespace HackerspaceLogic.Core
+namespace HackerspaceLogic.Core;
+
+public static class DbPathHelper
 {
-    public static class DbPathHelper
+    public static string GetDatabasePath()
     {
-        public static string GetDatabasePath()
-        {
-            // Relativer Pfad zur DB innerhalb der Solution (z. B. ChaosMap/Data/)
-            var relativePath = Path.Combine("ChaosMap", "Data", "hackerspace.db");
-            return Path.GetFullPath(relativePath);
-        }
+        // Holt den aktuellen Arbeitsordner der Anwendung (z. B. bin/Debug/netX.Y/)
+        string basePath = AppContext.BaseDirectory;
+
+        // Geht von dort relativ zu einem Ordner "Database"
+        return Path.Combine(basePath, "Database", "hackerspace.db");
     }
 }

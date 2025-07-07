@@ -65,18 +65,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Data\" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <ProjectReference Include="..\HackerspaceLogic\HackerspaceLogic.csproj" />
 	</ItemGroup>
-
-    <ItemGroup>
-        <None Update="Data\Hackerspace.db">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-    </ItemGroup>
 
 
 </Project>

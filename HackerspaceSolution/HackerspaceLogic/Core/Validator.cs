@@ -1,13 +1,15 @@
 ﻿using System.Text.Json;
 using Microsoft.Data.Sqlite;
+using HackerspaceLogic.Core;
+
 
 namespace HackerspaceLogic.Core
 {
-    public static class SpaceDataValidator
+    public static class Validator
     {
         public static async Task ValidateAndStoreAsync()
         {
-            string dbPath = Path.Combine("Database", "hackerspace.db");
+            string dbPath = DbPathHelper.GetDatabasePath();
 
             using var connection = new SqliteConnection($"Data Source={dbPath}");
             await connection.OpenAsync();

@@ -1,15 +1,17 @@
 ﻿using System.Text.Json;
 using Microsoft.Data.Sqlite;
+using HackerspaceLogic.Core;
+
 
 namespace HackerspaceLogic.Core;
 
-public static class SpaceDataDownloader
+public static class Downloadator
 {
     private const string ApiUrl = "https://mapall.space/api.json";
 
     public static async Task DownloadRawAsync()
     {
-        string dbPath = Path.Combine("Database", "hackerspace.db");
+        string dbPath = DbPathHelper.GetDatabasePath();
         Directory.CreateDirectory(Path.GetDirectoryName(dbPath)!);
 
         using var client = new HttpClient();

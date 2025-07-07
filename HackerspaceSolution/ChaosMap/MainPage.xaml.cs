@@ -1,24 +1,32 @@
-﻿namespace ChaosMap
+﻿using Microsoft.Maui.Controls;
+using System;
+using HackerspaceLogic.Core; // wichtig!
+using System.Threading.Tasks;
+
+namespace ChaosMap;
+
+public partial class MainPage : ContentPage
 {
-    public partial class MainPage : ContentPage
+    public MainPage()
     {
-        int count = 0;
+        InitializeComponent();
+    }
 
-        public MainPage()
+    private async void OnCounterClicked(object sender, EventArgs e)
+    {
+        CounterBtn.Text = "⬇️ Download läuft...";
+        try
         {
-            InitializeComponent();
+            await Downloadator.DownloadRawAsync();
+            await Validator.ValidateAndStoreAsync();
+
+            await DisplayAlert("Fertig!", "Download und Validierung abgeschlossen!", "OK");
+            CounterBtn.Text = "✅ Erfolgreich!";
         }
-
-        private void OnCounterClicked(object? sender, EventArgs e)
+        catch (Exception ex)
         {
-            count++;
-
-            if (count == 1)
-                CounterBtn.Text = $"Clicked {count} time";
-            else
-                CounterBtn.Text = $"Clicked {count} times";
-
-            SemanticScreenReader.Announce(CounterBtn.Text);
+            await DisplayAlert("Fehler", ex.Message, "OK");
+            CounterBtn.Text = "❌ Fehler beim Download";
         }
     }
 }

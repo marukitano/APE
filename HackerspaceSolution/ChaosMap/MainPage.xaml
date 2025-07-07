@@ -65,11 +65,6 @@
                                 Margin="5,2"
                                 StrokeShape="RoundRectangle 5">
                             <HorizontalStackLayout Spacing="10">
-                                <Image Source="{Binding LogoLocalPath}"
-                                       WidthRequest="30"
-                                       HeightRequest="30"
-                                       Aspect="AspectFit"
-                                       IsVisible="{Binding IsImageVisible}" />
                                 <VerticalStackLayout>
                                     <Label Text="{Binding Name}" FontAttributes="Bold" />
                                     <Label Text="{Binding Status}" FontSize="12" TextColor="{Binding StatusColor}" />

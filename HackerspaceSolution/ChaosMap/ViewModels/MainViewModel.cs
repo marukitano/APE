@@ -6,7 +6,6 @@ using HackerspaceLogic.Models;
 using Microsoft.Data.Sqlite;
 using ChaosMap.ViewModels;
 
-
 namespace ChaosMap.ViewModels;
 
 public class MainViewModel : INotifyPropertyChanged
@@ -42,7 +41,10 @@ public class MainViewModel : INotifyPropertyChanged
         await connection.OpenAsync();
 
         var command = connection.CreateCommand();
-        command.CommandText = "SELECT Name, Latitude, Longitude, LogoUrl, Status, Validated FROM ValidatedHackerspaceData";
+        command.CommandText = @"
+            SELECT Name, Latitude, Longitude, LogoUrl, LogoLocalPath, Status, Validated,
+                   Address, Email, Phone, Url, Zip, City
+            FROM ValidatedHackerspaceData";
 
         using var reader = await command.ExecuteReaderAsync();
 
@@ -56,8 +58,15 @@ public class MainViewModel : INotifyPropertyChanged
                 Latitude = reader.GetDouble(1),
                 Longitude = reader.GetDouble(2),
                 LogoUrl = reader.IsDBNull(3) ? "" : reader.GetString(3),
-                Status = reader.GetString(4),
-                Validated = reader.GetString(5)
+                LogoLocalPath = reader.IsDBNull(4) ? "" : reader.GetString(4),
+                Status = reader.GetString(5),
+                Validated = reader.GetString(6),
+                Address = reader.IsDBNull(7) ? "" : reader.GetString(7),
+                Email = reader.IsDBNull(8) ? "" : reader.GetString(8),
+                Phone = reader.IsDBNull(9) ? "" : reader.GetString(9),
+                Url = reader.IsDBNull(10) ? "" : reader.GetString(10),
+                Zip = reader.IsDBNull(11) ? "" : reader.GetString(11),
+                City = reader.IsDBNull(12) ? "" : reader.GetString(12)
             });
         }
 
@@ -86,7 +95,7 @@ public class MainViewModel : INotifyPropertyChanged
                 {
                     "open" => 0,
                     "closed" => 1,
-                    _ => 2 // "unknown" oder sonstiges
+                    _ => 2
                 };
             })
             .ThenBy(h => h.Name)
@@ -96,7 +105,6 @@ public class MainViewModel : INotifyPropertyChanged
         foreach (var hs in sorted)
             Hackerspaces.Add(hs);
     }
-
 
     public event PropertyChangedEventHandler? PropertyChanged;
     void OnPropertyChanged([CallerMemberName] string name = "") =>

@@ -1,6 +1,6 @@
 using ChaosMap.Models;
-// dein lokales Models-Verzeichnis
 using System.Diagnostics;
+using Microsoft.Maui.Controls;
 
 namespace ChaosMap.Views;
 
@@ -35,6 +35,7 @@ public partial class DetailPage : ContentPage, IQueryAttributable
 
         NameLabel.Text = entry.Name;
         StatusLabel.Text = $"Status: {entry.Status}";
+        StatusLabel.TextColor = entry.StatusColor; // ????? Dynamisch je nach Status
         ValidationLabel.Text = $"Validiert: {entry.Validated}";
 
         AddressLabel.Text = string.IsNullOrWhiteSpace(entry.Address) ? "Keine Adresse vorhanden" : entry.Address;

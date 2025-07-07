@@ -3,6 +3,8 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using HackerspaceLogic.Core.Models;
 using Microsoft.Data.Sqlite;
+using ChaosMap.ViewModels;
+
 
 namespace ChaosMap.ViewModels;
 
@@ -65,6 +67,35 @@ public class MainViewModel : INotifyPropertyChanged
         else
             LastUpdatedText = "noch keine Daten";
     }
+
+    public void SortAlphabetically()
+    {
+        var sorted = Hackerspaces.OrderBy(h => h.Name).ToList();
+        Hackerspaces.Clear();
+        foreach (var hs in sorted)
+            Hackerspaces.Add(hs);
+    }
+
+    public void SortByOpenStatus()
+    {
+        var sorted = Hackerspaces
+            .OrderBy(h =>
+            {
+                return h.Status.ToLower() switch
+                {
+                    "open" => 0,
+                    "closed" => 1,
+                    _ => 2 // "unknown" oder sonstiges
+                };
+            })
+            .ThenBy(h => h.Name)
+            .ToList();
+
+        Hackerspaces.Clear();
+        foreach (var hs in sorted)
+            Hackerspaces.Add(hs);
+    }
+
 
     public event PropertyChangedEventHandler? PropertyChanged;
     void OnPropertyChanged([CallerMemberName] string name = "") =>

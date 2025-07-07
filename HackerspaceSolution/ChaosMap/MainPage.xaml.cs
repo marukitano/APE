@@ -49,5 +49,17 @@ public partial class MainPage : ContentPage
             await vm.LoadValidatedDataAsync();
     }
 
+    private void OnSortAlphaClicked(object sender, EventArgs e)
+    {
+        if (BindingContext is MainViewModel vm)
+            vm.SortAlphabetically();
+    }
+
+    private void OnSortStatusClicked(object sender, EventArgs e)
+    {
+        if (BindingContext is MainViewModel vm)
+            vm.SortByOpenStatus();
+    }
+
 
 }

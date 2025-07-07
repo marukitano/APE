@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models1="clr-namespace:HackerspaceLogic.Core.Models"
              x:Class="ChaosMap.MainPage">
 
     <ScrollView>
@@ -29,6 +30,36 @@
                 Text="Starte Download"
                 Clicked="OnDownloadClicked"
                 HorizontalOptions="Fill" />
+
+            <VerticalStackLayout Spacing="2">
+                <Label Text="Liste des Chaos"
+                       FontSize="18"
+                       FontAttributes="Bold"
+                       TextColor="White" />
+                <Label Text="{Binding LastUpdatedText}"
+                       FontSize="12"
+                       TextColor="Gray" />
+            </VerticalStackLayout>
+
+
+            <CollectionView x:Name="PreviewList"
+                            HeightRequest="300"
+                            ItemsSource="{Binding Hackerspaces}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models1:ValidatedHackerspace">
+                        <Border Stroke="LightGray" StrokeThickness="1" Padding="10" Margin="5,2" StrokeShape="RoundRectangle 5">
+                            <VerticalStackLayout>
+                                <Label Text="{Binding Name}" FontAttributes="Bold"/>
+                                <Label Text="{Binding StatusWithTimestamp}"
+                                       FontSize="12"
+                                       TextColor="{Binding StatusColor}" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+
         </VerticalStackLayout>
     </ScrollView>
 

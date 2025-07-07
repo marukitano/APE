@@ -1,12 +1,16 @@
 ﻿namespace ChaosMap;
 
 using HackerspaceLogic.Core;
+using ChaosMap.ViewModels; // Wichtig für das ViewModel
 
 public partial class MainPage : ContentPage
 {
     public MainPage()
     {
         InitializeComponent();
+
+        // 🧠 Hier wird das ViewModel als Datenkontext gesetzt:
+        BindingContext = new MainViewModel();
     }
 
     private async void OnDownloadClicked(object sender, EventArgs e)
@@ -30,6 +34,20 @@ public partial class MainPage : ContentPage
 
         await Validator.ValidateAndStoreAsync();
 
+        // ⏩ Liste neu laden:
+        if (BindingContext is MainViewModel vm)
+            await vm.LoadValidatedDataAsync();
+
         DownloadButton.Text = "✅ Fertig!";
     }
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+
+        if (BindingContext is MainViewModel vm)
+            await vm.LoadValidatedDataAsync();
+    }
+
+
 }

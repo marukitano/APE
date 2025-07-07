@@ -1,136 +1,153 @@
-﻿using System.Text.Json;
+﻿using System.Net.Http;
+using System.Text.Json;
 using Microsoft.Data.Sqlite;
-using HackerspaceLogic.Core;
 
+namespace HackerspaceLogic.Core;
 
-namespace HackerspaceLogic.Core
+public static class Validator
 {
-    public static class Validator
+    public static async Task ValidateAndStoreAsync()
     {
-        public static async Task ValidateAndStoreAsync()
+        string dbPath = DbPathHelper.GetDatabasePath();
+        string logoFolder = Path.Combine(Path.GetDirectoryName(dbPath)!, "logos");
+
+        Directory.CreateDirectory(logoFolder); // 🗂 Logo-Verzeichnis sicherstellen
+
+        using var connection = new SqliteConnection($"Data Source={dbPath}");
+        await connection.OpenAsync();
+
+        // 🔨 Tabelle anlegen (falls nicht vorhanden)
+        var createCmd = connection.CreateCommand();
+        createCmd.CommandText =
+        @"
+            CREATE TABLE IF NOT EXISTS ValidatedHackerspaceData (
+                Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                Name TEXT NOT NULL,
+                Latitude REAL NOT NULL,
+                Longitude REAL NOT NULL,
+                LogoUrl TEXT,
+                LogoLocalPath TEXT,
+                Status TEXT NOT NULL,
+                Validated TEXT NOT NULL
+            );
+        ";
+        await createCmd.ExecuteNonQueryAsync();
+
+        // 🧼 Alte Daten löschen
+        var deleteCmd = connection.CreateCommand();
+        deleteCmd.CommandText = "DELETE FROM ValidatedHackerspaceData;";
+        await deleteCmd.ExecuteNonQueryAsync();
+
+        var resetIdCmd = connection.CreateCommand();
+        resetIdCmd.CommandText = "DELETE FROM sqlite_sequence WHERE name='ValidatedHackerspaceData';";
+        await resetIdCmd.ExecuteNonQueryAsync();
+
+        // 📦 Rohdaten holen
+        var selectCmd = connection.CreateCommand();
+        selectCmd.CommandText = "SELECT Name, FeatureJson, SourceJson FROM RawHackerspaceData;";
+        using var reader = await selectCmd.ExecuteReaderAsync();
+
+        using var httpClient = new HttpClient();
+
+        while (await reader.ReadAsync())
         {
-            string dbPath = DbPathHelper.GetDatabasePath();
+            string name = reader.GetString(0);
+            string featureJson = reader.GetString(1);
+            string? sourceJson = reader.IsDBNull(2) ? null : reader.GetString(2);
 
-            using var connection = new SqliteConnection($"Data Source={dbPath}");
-            await connection.OpenAsync();
+            double lat = 0, lon = 0;
+            string logoUrl = "", logoLocalPath = "";
+            string status = "unbekannt";
 
-            // 🛠️ Tabelle für validierte Daten erstellen (falls sie nicht existiert)
-            var createCmd = connection.CreateCommand();
-            createCmd.CommandText =
-            @"
-                CREATE TABLE IF NOT EXISTS ValidatedHackerspaceData (
-                    Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    Name TEXT NOT NULL,
-                    Latitude REAL NOT NULL,
-                    Longitude REAL NOT NULL,
-                    LogoUrl TEXT,
-                    Status TEXT NOT NULL,
-                    Validated TEXT NOT NULL
-                );
-            ";
-            await createCmd.ExecuteNonQueryAsync();
-
-            // 🧹 Bestehende Daten leeren
-            var deleteCmd = connection.CreateCommand();
-            deleteCmd.CommandText = "DELETE FROM ValidatedHackerspaceData;";
-            await deleteCmd.ExecuteNonQueryAsync();
-
-            // 🔄 AUTOINCREMENT zurücksetzen (Id wieder bei 1 starten)
-            var resetIdCmd = connection.CreateCommand();
-            resetIdCmd.CommandText = "DELETE FROM sqlite_sequence WHERE name='ValidatedHackerspaceData';";
-            await resetIdCmd.ExecuteNonQueryAsync();
-
-            // 📦 Rohdaten laden
-            var selectCmd = connection.CreateCommand();
-            selectCmd.CommandText = "SELECT Name, FeatureJson, SourceJson FROM RawHackerspaceData;";
-            using var reader = await selectCmd.ExecuteReaderAsync();
-
-            while (await reader.ReadAsync())
+            // 🌍 Koordinaten
+            try
             {
-                string name = reader.GetString(0);
-                string featureJson = reader.GetString(1);
-                string? sourceJson = reader.IsDBNull(2) ? null : reader.GetString(2);
+                using var featureDoc = JsonDocument.Parse(featureJson);
+                if (featureDoc.RootElement.TryGetProperty("geometry", out var geo) &&
+                    geo.TryGetProperty("coordinates", out var coords) &&
+                    coords.ValueKind == JsonValueKind.Array &&
+                    coords.GetArrayLength() == 2)
+                {
+                    lon = coords[0].GetDouble();
+                    lat = coords[1].GetDouble();
+                }
+            }
+            catch { continue; }
 
-                double lat = 0, lon = 0;
-                string logo = "";
-                string status = "unbekannt";
+            if (Math.Abs(lat) < 0.0001 && Math.Abs(lon) < 0.0001)
+                continue;
 
-                // 🛰️ Koordinaten aus Feature-JSON holen
+            // 🔍 Source auswerten
+            if (!string.IsNullOrWhiteSpace(sourceJson))
+            {
                 try
                 {
-                    using var featureDoc = JsonDocument.Parse(featureJson);
-                    if (featureDoc.RootElement.TryGetProperty("geometry", out var geo) &&
-                        geo.ValueKind == JsonValueKind.Object &&
-                        geo.TryGetProperty("coordinates", out var coords) &&
-                        coords.ValueKind == JsonValueKind.Array &&
-                        coords.GetArrayLength() == 2)
+                    using var sourceDoc = JsonDocument.Parse(sourceJson);
+                    var root = sourceDoc.RootElement;
+
+                    // ✅ Status
+                    if (root.TryGetProperty("state", out var state) && state.TryGetProperty("open", out var openProp))
                     {
-                        lon = coords[0].GetDouble();
-                        lat = coords[1].GetDouble();
-                    }
-                }
-                catch
-                {
-                    continue; // ❌ Fehlerhafte Koordinaten → skip
-                }
-
-                if (Math.Abs(lat) < 0.0001 && Math.Abs(lon) < 0.0001)
-                    continue; // 🛑 0-Koordinaten → skip
-
-                // 🌐 Auswertung der Source-JSON
-                if (!string.IsNullOrWhiteSpace(sourceJson))
-                {
-                    try
-                    {
-                        using var sourceDoc = JsonDocument.Parse(sourceJson);
-                        var root = sourceDoc.RootElement;
-
-                        if (root.TryGetProperty("state", out var state) && state.ValueKind == JsonValueKind.Object)
+                        status = openProp.ValueKind switch
                         {
-                            if (state.TryGetProperty("open", out var openProp))
+                            JsonValueKind.True => "open",
+                            JsonValueKind.False => "closed",
+                            _ => "unbekannt"
+                        };
+                    }
+
+                    // 🖼️ Logo verarbeiten
+                    if (root.TryGetProperty("logo", out var logoProp) && logoProp.ValueKind == JsonValueKind.String)
+                    {
+                        logoUrl = logoProp.GetString() ?? "";
+
+                        if (!string.IsNullOrWhiteSpace(logoUrl))
+                        {
+                            try
                             {
-                                status = openProp.ValueKind switch
+                                string fileName = Path.GetFileName(new Uri(logoUrl).LocalPath);
+                                string localPath = Path.Combine(logoFolder, $"{name}_{fileName}");
+
+                                // Nur downloaden, wenn Datei fehlt
+                                if (!File.Exists(localPath))
                                 {
-                                    JsonValueKind.True => "open",
-                                    JsonValueKind.False => "closed",
-                                    _ => "unbekannt"
-                                };
+                                    var data = await httpClient.GetByteArrayAsync(logoUrl);
+                                    await File.WriteAllBytesAsync(localPath, data);
+                                }
+
+                                logoLocalPath = localPath;
+                            }
+                            catch
+                            {
+                                logoLocalPath = ""; // Fehler beim Download ignorieren
                             }
                         }
-
-                        if (root.TryGetProperty("logo", out var logoProp) &&
-                            logoProp.ValueKind == JsonValueKind.String)
-                        {
-                            logo = logoProp.GetString() ?? "";
-                        }
-                    }
-                    catch
-                    {
-                        status = "unbekannt";
-                        // logo darf leer bleiben
                     }
                 }
-
-                string validated = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-
-                // 💾 In Datenbank einfügen
-                var insertCmd = connection.CreateCommand();
-                insertCmd.CommandText =
-                @"
-                    INSERT INTO ValidatedHackerspaceData (Name, Latitude, Longitude, LogoUrl, Status, Validated)
-                    VALUES ($name, $lat, $lon, $logo, $status, $validated);
-                ";
-                insertCmd.Parameters.AddWithValue("$name", name);
-                insertCmd.Parameters.AddWithValue("$lat", lat);
-                insertCmd.Parameters.AddWithValue("$lon", lon);
-                insertCmd.Parameters.AddWithValue("$logo", logo);
-                insertCmd.Parameters.AddWithValue("$status", status);
-                insertCmd.Parameters.AddWithValue("$validated", validated);
-
-                await insertCmd.ExecuteNonQueryAsync();
+                catch { }
             }
 
-            Console.WriteLine("✅ Validierte Daten gespeichert (inkl. ID-Reset).");
+            string validated = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+
+            // 💾 In Datenbank speichern
+            var insertCmd = connection.CreateCommand();
+            insertCmd.CommandText =
+            @"
+                INSERT INTO ValidatedHackerspaceData
+                (Name, Latitude, Longitude, LogoUrl, LogoLocalPath, Status, Validated)
+                VALUES ($name, $lat, $lon, $logoUrl, $logoLocal, $status, $validated);
+            ";
+            insertCmd.Parameters.AddWithValue("$name", name);
+            insertCmd.Parameters.AddWithValue("$lat", lat);
+            insertCmd.Parameters.AddWithValue("$lon", lon);
+            insertCmd.Parameters.AddWithValue("$logoUrl", logoUrl);
+            insertCmd.Parameters.AddWithValue("$logoLocal", logoLocalPath);
+            insertCmd.Parameters.AddWithValue("$status", status);
+            insertCmd.Parameters.AddWithValue("$validated", validated);
+
+            await insertCmd.ExecuteNonQueryAsync();
         }
+
+        Console.WriteLine("✅ Validierung abgeschlossen – Logos gespeichert.");
     }
 }

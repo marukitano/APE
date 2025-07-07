@@ -1,26 +1,48 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="ChaosMap.Views.DetailPage"
-             Title="Details">
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="ChaosMap.Views.DetailPage"
+
+    Title="Details">
 
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="15">
 
-            <Image x:Name="LogoImage" HeightRequest="150" />
+            <Label x:Name="NameLabel"
+                   FontSize="24"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center" />
 
-            <Label x:Name="NameLabel" FontAttributes="Bold" FontSize="24"/>
-            <Label x:Name="StatusLabel" FontAttributes="Bold"/>
-            <Label x:Name="ValidationLabel" FontAttributes="Italic"/>
+            <Image x:Name="LogoImage"
+                   HeightRequest="100"
+                   WidthRequest="100"
+                   HorizontalOptions="Center"
+                   IsVisible="False" />
 
-            <Label Text="Adresse:" FontAttributes="Bold"/>
-            <Label x:Name="AddressLabel"/>
+            <Label x:Name="StatusLabel"
+                   FontSize="18"
+                   TextColor="{Binding StatusColor}" 
+                   HorizontalOptions="Center" />
 
-            <Label Text="E-Mail:" FontAttributes="Bold"/>
-            <Label x:Name="EmailLabel"/>
+            <Label x:Name="ValidationLabel"
+                   FontSize="14"
+                   HorizontalOptions="Center" />
 
-            <Label Text="Telefon:" FontAttributes="Bold"/>
-            <Label x:Name="PhoneLabel"/>
+            <Label Text="Adresse:" FontAttributes="Bold" />
+            <Label x:Name="AddressLabel" />
+
+            <Label Text="PLZ / Ort:" FontAttributes="Bold" />
+            <Label x:Name="ZipCityLabel" />
+
+            <Label Text="E-Mail:" FontAttributes="Bold" />
+            <Label x:Name="EmailLabel" />
+
+            <Label Text="Telefon:" FontAttributes="Bold" />
+            <Label x:Name="PhoneLabel" />
+
+            <Label Text="Webseite:" FontAttributes="Bold" />
+            <Label x:Name="UrlLabel" />
 
         </VerticalStackLayout>
     </ScrollView>

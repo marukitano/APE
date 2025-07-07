@@ -3,6 +3,8 @@
 using ChaosMap.ViewModels; // Wichtig für das ViewModel
 using ChaosMap.Views;
 using HackerspaceLogic.Core;
+using HackerspaceLogic.Models;
+
 
 public partial class MainPage : ContentPage
 {
@@ -64,7 +66,7 @@ public partial class MainPage : ContentPage
 
     private async void PreviewList_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        if (e.CurrentSelection.FirstOrDefault() is HackerspaceLogic.Core.Models.ValidatedHackerspace selected)
+        if (e.CurrentSelection.FirstOrDefault() is ChaosMap.Models.ValidatedHackerspace selected)
         {
             await Shell.Current.GoToAsync(nameof(DetailPage), true, new Dictionary<string, object>
             {

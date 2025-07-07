@@ -1,7 +1,8 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using HackerspaceLogic.Core.Models;
+using ChaosMap.Models;
+using HackerspaceLogic.Models;
 using Microsoft.Data.Sqlite;
 using ChaosMap.ViewModels;
 

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:models1="clr-namespace:HackerspaceLogic.Core.Models"
+             xmlns:model="clr-namespace:ChaosMap.Models"
              x:Class="ChaosMap.MainPage">
 
     <ScrollView>
@@ -13,7 +13,6 @@
                    Margin="0,50,0,0"
                    SemanticProperties.Description="Der Versuch, mit einer Kaffemaschine ein Fax zu verschicken, das ist HACKING" />
 
-            <!-- Neue Zeile: Buttons gleichmäßig verteilt -->
             <Grid ColumnDefinitions="*,*,*" Padding="0,10,0,0">
                 <Button x:Name="DownloadButton"
                         Text="Aktualisieren"
@@ -41,7 +40,6 @@
                         Grid.Column="2" />
             </Grid>
 
-            <!-- Titel & Zeitstempel separat darunter -->
             <VerticalStackLayout Spacing="2" Padding="0,5,0,0">
                 <Label Text="Liste des Chaos"
                        FontSize="23"
@@ -54,14 +52,13 @@
                        Margin="0,0,0,0" />
             </VerticalStackLayout>
 
-            <!-- Liste -->
             <CollectionView x:Name="PreviewList"
                             HeightRequest="300"
                             ItemsSource="{Binding Hackerspaces}"
                             SelectionMode="Single"
                             SelectionChanged="PreviewList_SelectionChanged">
                 <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="models1:ValidatedHackerspace">
+                    <DataTemplate x:DataType="model:ValidatedHackerspace">
                         <Border Stroke="LightGray"
                                 StrokeThickness="1"
                                 Padding="10"
